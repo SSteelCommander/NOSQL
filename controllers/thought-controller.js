@@ -15,7 +15,7 @@ const thoughtController = {
   },
   // Get 1 thought
   getSingleThought(req, res) {
-    Thought.findOne({ _id: req.params.ThoughtId })
+    Thought.findOne({ _id: req.params.thoughtId })
       .select("-__v")
       .then((Thought) =>
         !Thought
@@ -35,7 +35,7 @@ const thoughtController = {
   },
   // Delete
   deleteThoughts(req, res) {
-    Thought.findOneAndDelete({ _id: req.params.ThoughtId })
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
       .then((Thought) =>
         !Thought
           ? res.status(404).json({ message: "No Thought with that ID" })
@@ -47,7 +47,7 @@ const thoughtController = {
   // Update
   updateThoughts(req, res) {
     Thought.findOneAndUpdate(
-      { _id: req.params.ThoughtId },
+      { _id: req.params.thoughtId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
