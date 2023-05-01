@@ -5,8 +5,8 @@ const thoughtController = {
   getThought(req, res) {
     Thought.find()
       .sort({ createdAt: -1 })
-      .then((dbThoughtData) => {
-        res.json(dbThoughtData);
+      .then((metaThought) => {
+        res.json(metaThought);
       })
       .catch((err) => {
         console.log(err);
@@ -24,7 +24,7 @@ const thoughtController = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Create 
+  // Create
   createThoughts(req, res) {
     Thought.create(req.body)
       .then((Thought) => res.json(Thought))
@@ -58,8 +58,41 @@ const thoughtController = {
       )
       .catch((err) => res.status(500).json(err));
   },
+  removeReactions(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
+      { runValidators: true, new: true }
+    )
+      .then((metaThought) => {
+        if (!metaThought) {
+          return res.status(404).json({ message: "No thought with this id!" });
+        }
+        res.json(metaThought);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  // add a reaction to a thought
+  addReactions(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
+    )
+      .then((metaThought) => {
+        if (!metaThought) {
+          return res.status(404).json({ message: "No thought with this id!" });
+        }
+        res.json(metaThought);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
 };
-
-
 
 module.exports = thoughtController;
